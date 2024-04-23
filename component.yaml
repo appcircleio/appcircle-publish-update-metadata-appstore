@@ -1,0 +1,49 @@
+platform: iOS
+purpose: Publish
+buildPlatform:
+displayName: "Update meta-data on App Store"
+description: "Uploads metadata info, scrrenshots, videos or binary to App Store"
+marketPlace: "AppleAppStore"
+inputs:
+- key: "AC_XCODE_LIST_DIR"
+  defaultValue: "$AC_XCODE_LIST_DIR"
+  isRequired: false
+  title: Xcode List Directory
+  description: "Specifies the Xcode folder list directory. Current Xcode folder structure examples : /Applications/Xcode/10.3/Xcode or /Applications/Xcode/11.0/Xcode"
+  helpText:
+- key: "AC_XCODE_VERSION"
+  defaultValue: "15.2.x"
+  editorType: select
+  options: "15.2.x,15.1.x,15.0.x,14.3.x,14.2.x,14.1.x,14.0.x,13.4.x,13.3.x,13.2.x,13.1.x,13.0.x"
+  isRequired: true
+  title: Xcode Version
+  description: Specifies the Xcode version.
+  helpText:
+- key: "AC_UPLOAD_BINARY_FILE"
+  defaultValue: "True"
+  isRequired: false
+  editorType: select
+  title: Upload .ipa file while sending meta-data
+  description: "Uploads .ipa file App Store or TestFlight stages."
+  options: "False,True"
+  helpText:
+- key: "AC_UPLOAD_SCREENSHOT_FILES"
+  defaultValue: "True"
+  isRequired: false
+  editorType: select
+  title: Uploads screenshots while sending meta-data
+  description: "Uploads screenshot files to App Store Connect for the related app version."
+  options: "False,True"
+  helpText:
+- key: "AC_UPDATE_METADATA_INFO"
+  defaultValue: "True"
+  isRequired: false
+  editorType: select
+  title: Update metada-info fields
+  description: "If disabled updating meta-data info will be ignored"
+  options: "False,True"
+  helpText:
+processFilename: bash
+processArguments: '%AC_STEP_TEMP%/main.sh'
+files:
+- "main.sh"
