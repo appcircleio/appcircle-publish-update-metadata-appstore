@@ -4,6 +4,7 @@ buildPlatform:
 displayName: "Update meta-data on App Store"
 description: "Uploads metadata info, scrrenshots, videos or binary to App Store"
 marketPlace: "AppleAppStore"
+structureType: CustomUI
 inputs:
 - key: "AC_XCODE_LIST_DIR"
   defaultValue: "$AC_XCODE_LIST_DIR"
