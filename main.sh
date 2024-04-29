@@ -18,6 +18,9 @@
       locale
       curl -o "./$IPAFileName" -k $IPAFileUrl
        
+     download_screenshots_or_apppreviews "$ScreenShotList" "screenshots"
+     download_screenshots_or_apppreviews "$AppPreviewList" "app_previews"
+
      if [ "$appleStoreSubmitApiType" == 1 ] || [ "$appleStoreSubmitApiType" == "AppStoreConnectApiConnection" ]; then
  
         bundle init
@@ -33,11 +36,44 @@
           bundle exec fastlane doMetaData --verbose
           if [ $? -eq 0 ] 
           then
-            echo "Release progress succeeded"
+            echo "Metadata progress succeeded"
             exit 0
           else
-            echo "Release progress failed :" >&2
+            echo "Metadata progress failed :" >&2
             exit 1
           fi
         fi
  
+  download_screenshots_or_apppreviews() {
+  local json_file="$1"
+  local itemTypeForPath = "$2"
+  
+  local continueDownload = true; 
+   if [[ ! -f "$json_file" ]]; then
+    echo "Screenshot list file '$json_file' not found!" >&2
+    continueDownload=false;
+  fi
+
+
+  if [[ ! -s "$json_file" ]] || ! jq -e '.[]' "$json_file" > /dev/null 2>&1; then
+    echo "Error: Screenshot list file '$json_file' is empty or not a valid JSON array!" >&2
+    continueDownload=false;
+  fi
+
+ if [[ "$continueDownload" == true ]]; then
+ 
+    for entry in $(jq -c '.[]' "$json_file"); do
+      local signed_url=$(echo "$entry" | jq -r '.SignedUrl')
+      local lang=$(echo "$entry" | jq -r '.Lang')
+      local display_type=$(echo "$entry" | jq -r '.ScreenshotDisplayType')
+      local filename=$(echo "$signed_url" | awk -F '/' '{print $NF}')
+      
+      target_dir="fastlane/metadata/$itemTypeForPath/$lang/$display_type"
+      mkdir -p "$target_dir"
+      
+      # Download the screenshot and save it to the target directory
+      curl -o "$target_dir/$filename" -k "$signed_url"
+      echo "Downloaded screenshot: $filename to $target_dir"
+    done
+  fi
+}
