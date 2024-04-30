@@ -29,8 +29,11 @@
         touch fastlane/Appfile
         touch fastlane/Fastfile
         mv $FastFileConfig "fastlane/Fastfile"
-        cat $FastFileConfig
- 
+
+        cat $FastFileConfig || true
+        cat $ScreenShotList || true
+        cat $AppPreviewList || true
+
         mv "$AppStoreConnectApiKey" "$AppStoreConnectApiKeyFileName"
  
           bundle exec fastlane doMetaData --verbose
