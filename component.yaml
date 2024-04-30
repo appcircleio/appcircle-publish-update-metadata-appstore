@@ -15,7 +15,7 @@ inputs:
 - key: "AC_XCODE_VERSION"
   defaultValue: "15.2.x"
   editorType: select
-  options: "15.2.x,15.1.x,15.0.x,14.3.x,14.2.x,14.1.x,14.0.x,13.4.x,13.3.x,13.2.x,13.1.x,13.0.x"
+  options: "15.4.x,15.3.x,15.2.x,15.1.x,15.0.x,14.3.x,14.2.x,14.1.x,14.0.x,13.4.x,13.3.x,13.2.x,13.1.x,13.0.x"
   isRequired: true
   title: Xcode Version
   description: Specifies the Xcode version.
