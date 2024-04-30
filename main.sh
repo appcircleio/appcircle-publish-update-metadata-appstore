@@ -23,19 +23,19 @@ download_screenshots_or_apppreviews() {
       local json_file="$1"
       local itemTypeForPath = "$2"
       
-      local continueDownload = true; 
+      local continueDownload = "true"; 
       if [[ ! -f "$json_file" ]]; then
         echo "Screenshot list file '$json_file' not found!" >&2
-        continueDownload=false;
+        continueDownload="false";
       fi
 
 
       if [[ ! -s "$json_file" ]] || ! jq -e '.[]' "$json_file" > /dev/null 2>&1; then
         echo "Error: Screenshot list file '$json_file' is empty or not a valid JSON array!" >&2
-        continueDownload=false;
+        continueDownload="false";
       fi
 
-    if [[ "$continueDownload" == true ]]; then
+    if [[ "$continueDownload" == "true" ]]; then
     
         for entry in $(jq -c '.[]' "$json_file"); do
           local signed_url=$(echo "$entry" | jq -r '.SignedUrl')
@@ -52,6 +52,39 @@ download_screenshots_or_apppreviews() {
       fi
 }
 
+    #TODO:read content of  $MetaDataLocalizationList to get array json do nothing if file is not exists and doesn't contain item.
+
+   if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
+    localization_data=$(jq -c '.[]' "$MetaDataLocalizationList")
+
+    for entry in $localization_data; do
+        language_code=$(echo "$entry" | jq -r '.lang')
+        metadata=$(echo "$entry" | jq -r '.metadata')
+
+        mkdir -p "./fastlane/metadata/$language_code"
+
+        # Mapping the fields from JSON to supported fields in Fastlane
+        echo "$metadata" | jq -r 'to_entries[] | .key as $key | .value as $value | 
+            if $key == "description" then
+                echo $value > "./fastlane/metadata/$language_code/description.txt"
+            elif $key == "keywords" then
+                echo $value > "./fastlane/metadata/$language_code/keywords.txt"
+            elif $key == "name" then
+                echo $value > "./fastlane/metadata/$language_code/name.txt"
+            elif $key == "whatsNew" then
+                echo $value > "./fastlane/metadata/$language_code/release_notes.txt"
+            elif $key == "title" then
+                echo $value > "./fastlane/metadata/$language_code/title.txt"
+            elif $key == "subtitle" then
+                echo $value > "./fastlane/metadata/$language_code/subtitle.txt"
+            elif $key == "supportUrl" then
+                echo $value > "./fastlane/metadata/$language_code/support_url.txt"
+            elif $key == "marketingUrl" then
+                echo $value > "./fastlane/metadata/$language_code/marketing_url.txt"
+            elif $key == "copyright" then
+                echo $value > "./fastlane/metadata/$language_code/copyright.txt"'
+     done
+  fi
 
      download_screenshots_or_apppreviews "$ScreenShotList" "screenshots"
      download_screenshots_or_apppreviews "$AppPreviewList" "app_previews"
