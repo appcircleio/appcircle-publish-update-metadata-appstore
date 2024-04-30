@@ -66,9 +66,9 @@ download_screenshots_or_apppreviews() {
         touch fastlane/Fastfile
         mv $FastFileConfig "fastlane/Fastfile"
 
-        cat $FastFileConfig || true
-        cat $ScreenShotList || true
-        cat $AppPreviewList || true
+        # cat $FastFileConfig || true
+        # cat $ScreenShotList || true
+        # cat $AppPreviewList || true
 
         mv "$AppStoreConnectApiKey" "$AppStoreConnectApiKeyFileName"
  
