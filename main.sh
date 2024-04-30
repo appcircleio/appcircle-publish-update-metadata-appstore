@@ -52,51 +52,37 @@ download_screenshots_or_apppreviews() {
       fi
 }
 
-  if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
+if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
 
     jq -c '.[]' "$MetaDataLocalizationList" | while IFS= read -r entry; do
+
         language_code=$(echo "$entry" | jq -r '.lang')
         metadata=$(echo "$entry")
 
         mkdir -p "./fastlane/metadata/$language_code"
 
-        echo "$metadata" | while IFS= read -r line; do
-            key=$(echo "$line" | jq -r 'keys[0]')
-            value=$(echo "$line" | jq -r ".$key")
+        title=$(echo "$metadata" | jq -r '.title')
+        subtitle=$(echo "$metadata" | jq -r '.subtitle')
+        description=$(echo "$metadata" | jq -r '.description')
+        keywords=$(echo "$metadata" | jq -r '.keywords')
+        supportUrl=$(echo "$metadata" | jq -r '.supportUrl')
+        marketingUrl=$(echo "$metadata" | jq -r '.marketingUrl')
+        version=$(echo "$metadata" | jq -r '.version')
+        copyright=$(echo "$metadata" | jq -r '.copyright')
+        whatsNew=$(echo "$metadata" | jq -r '.whatsNew')
 
-            case "$key" in
-                "description")
-                    echo "$value" > "./fastlane/metadata/$language_code/description.txt"
-                    ;;
-                "keywords")
-                    echo "$value" > "./fastlane/metadata/$language_code/keywords.txt"
-                    ;;
-                "title")
-                    echo "$value" > "./fastlane/metadata/$language_code/title.txt"
-                    ;;
-                "subtitle")
-                    echo "$value" > "./fastlane/metadata/$language_code/subtitle.txt"
-                    ;;
-                "supportUrl")
-                    echo "$value" > "./fastlane/metadata/$language_code/support_url.txt"
-                    ;;
-                "marketingUrl")
-                    echo "$value" > "./fastlane/metadata/$language_code/marketing_url.txt"
-                    ;;
-                "copyright")
-                    echo "$value" > "./fastlane/metadata/$language_code/copyright.txt"
-                    ;;
-                "whatsNew")
-                    # Handling null value for whatsNew
-                    if [ "$value" != "null" ]; then
-                        echo "$value" > "./fastlane/metadata/$language_code/release_notes.txt"
-                    fi
-                    ;;
-                *)
-                    # Handle unrecognized keys or additional fields here
-                    ;;
-            esac
-        done
+        echo "$title" > "./fastlane/metadata/$language_code/title.txt"
+        echo "$subtitle" > "./fastlane/metadata/$language_code/subtitle.txt"
+        echo "$description" > "./fastlane/metadata/$language_code/description.txt"
+        echo "$keywords" > "./fastlane/metadata/$language_code/keywords.txt"
+        echo "$supportUrl" > "./fastlane/metadata/$language_code/support_url.txt"
+        echo "$marketingUrl" > "./fastlane/metadata/$language_code/marketing_url.txt"
+        echo "$copyright" > "./fastlane/metadata/$language_code/copyright.txt"
+
+        if [ "$whatsNew" != "null" ]; then
+            echo "$whatsNew" > "./fastlane/metadata/$language_code/whatsNew.txt"
+        fi
+
     done
 fi
 
