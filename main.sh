@@ -52,39 +52,54 @@ download_screenshots_or_apppreviews() {
       fi
 }
 
-    #TODO:read content of  $MetaDataLocalizationList to get array json do nothing if file is not exists and doesn't contain item.
+  if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
 
-   if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
-    localization_data=$(jq -c '.[]' "$MetaDataLocalizationList")
-
-    for entry in $localization_data; do
+    jq -c '.[]' "$MetaDataLocalizationList" | while IFS= read -r entry; do
         language_code=$(echo "$entry" | jq -r '.lang')
-        metadata=$(echo "$entry" | jq -r '.metadata')
+        metadata=$(echo "$entry")
 
         mkdir -p "./fastlane/metadata/$language_code"
 
-        # Mapping the fields from JSON to supported fields in Fastlane
-        echo "$metadata" | jq -r 'to_entries[] | .key as $key | .value as $value | 
-            if $key == "description" then
-                echo $value > "./fastlane/metadata/$language_code/description.txt"
-            elif $key == "keywords" then
-                echo $value > "./fastlane/metadata/$language_code/keywords.txt"
-            elif $key == "name" then
-                echo $value > "./fastlane/metadata/$language_code/name.txt"
-            elif $key == "whatsNew" then
-                echo $value > "./fastlane/metadata/$language_code/release_notes.txt"
-            elif $key == "title" then
-                echo $value > "./fastlane/metadata/$language_code/title.txt"
-            elif $key == "subtitle" then
-                echo $value > "./fastlane/metadata/$language_code/subtitle.txt"
-            elif $key == "supportUrl" then
-                echo $value > "./fastlane/metadata/$language_code/support_url.txt"
-            elif $key == "marketingUrl" then
-                echo $value > "./fastlane/metadata/$language_code/marketing_url.txt"
-            elif $key == "copyright" then
-                echo $value > "./fastlane/metadata/$language_code/copyright.txt"'
-     done
-  fi
+        echo "$metadata" | while IFS= read -r line; do
+            key=$(echo "$line" | jq -r 'keys[0]')
+            value=$(echo "$line" | jq -r ".$key")
+
+            case "$key" in
+                "description")
+                    echo "$value" > "./fastlane/metadata/$language_code/description.txt"
+                    ;;
+                "keywords")
+                    echo "$value" > "./fastlane/metadata/$language_code/keywords.txt"
+                    ;;
+                "title")
+                    echo "$value" > "./fastlane/metadata/$language_code/title.txt"
+                    ;;
+                "subtitle")
+                    echo "$value" > "./fastlane/metadata/$language_code/subtitle.txt"
+                    ;;
+                "supportUrl")
+                    echo "$value" > "./fastlane/metadata/$language_code/support_url.txt"
+                    ;;
+                "marketingUrl")
+                    echo "$value" > "./fastlane/metadata/$language_code/marketing_url.txt"
+                    ;;
+                "copyright")
+                    echo "$value" > "./fastlane/metadata/$language_code/copyright.txt"
+                    ;;
+                "whatsNew")
+                    # Handling null value for whatsNew
+                    if [ "$value" != "null" ]; then
+                        echo "$value" > "./fastlane/metadata/$language_code/release_notes.txt"
+                    fi
+                    ;;
+                *)
+                    # Handle unrecognized keys or additional fields here
+                    ;;
+            esac
+        done
+    done
+fi
+
 
      download_screenshots_or_apppreviews "$ScreenShotList" "screenshots"
      download_screenshots_or_apppreviews "$AppPreviewList" "app_previews"
