@@ -1,10 +1,9 @@
 #!/bin/bash
- 
+
       export LC_ALL=en_US.UTF-8
       export LANG=en_US.UTF-8
       export LANGUAGE=en_US.UTF-8
-      #TODO:download all metada ss, txt, videos and extact, make sure folder structure is matches fastlane's allowed folder structure.
-      
+    
       echo "IPAFileName:$IPAFileName"
       echo "IPAFileUrl:$IPAFileUrl"
       echo "AppleId:$AppleId"
@@ -30,7 +29,8 @@
         touch fastlane/Appfile
         touch fastlane/Fastfile
         mv $FastFileConfig "fastlane/Fastfile"
-
+        cat $FastFileConfig
+ 
         mv "$AppStoreConnectApiKey" "$AppStoreConnectApiKeyFileName"
  
           bundle exec fastlane doMetaData --verbose
@@ -71,7 +71,6 @@
       target_dir="fastlane/metadata/$itemTypeForPath/$lang/$display_type"
       mkdir -p "$target_dir"
       
-      # Download the screenshot and save it to the target directory
       curl -o "$target_dir/$filename" -k "$signed_url"
       echo "Downloaded screenshot: $filename to $target_dir"
     done
