@@ -17,15 +17,15 @@
       locale
       curl -o "./$IPAFileName" -k $IPAFileUrl
 
- 
+  
 download_screenshots_or_apppreviews() {
 
       local json_file="$1"
-      local itemTypeForPath = "$2"
-      
-      local continueDownload = "true"; 
+      local itemTypeForPath="$2"
+      local continueDownload="true"; 
+
       if [[ ! -f "$json_file" ]]; then
-        echo "Screenshot list file '$json_file' not found!" >&2
+        echo "file '$json_file' not found for $itemTypeForPath !" >&2
         continueDownload="false";
       fi
 
@@ -41,8 +41,8 @@ download_screenshots_or_apppreviews() {
           local signed_url=$(echo "$entry" | jq -r '.SignedUrl')
           local lang=$(echo "$entry" | jq -r '.Lang')
           local display_type=$(echo "$entry" | jq -r '.ScreenshotDisplayType')
-          local filename=$(echo "$signed_url" | awk -F '/' '{print $NF}')
-          
+          local filename=$(basename "$signed_url" | cut -d'?' -f1)
+
           target_dir="./fastlane/metadata/$itemTypeForPath/$lang/$display_type"
          
             if [[ ! -d "$target_dir" ]]; then
@@ -93,7 +93,6 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
 
     done
 fi
-
 
      download_screenshots_or_apppreviews "$ScreenShotList" "screenshots"
      download_screenshots_or_apppreviews "$AppPreviewList" "app_previews"
