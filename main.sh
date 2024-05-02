@@ -43,8 +43,12 @@ download_screenshots_or_apppreviews() {
           local display_type=$(echo "$entry" | jq -r '.ScreenshotDisplayType')
           local filename=$(echo "$signed_url" | awk -F '/' '{print $NF}')
           
-          target_dir="fastlane/metadata/$itemTypeForPath/$lang/$display_type"
-          mkdir -p "$target_dir"
+          target_dir="./fastlane/metadata/$itemTypeForPath/$lang/$display_type"
+         
+            if [[ ! -d "$target_dir" ]]; then
+                mkdir -p "$target_dir"
+            fi
+            
           
           curl -o "$target_dir/$filename" -k "$signed_url"
           echo "Downloaded screenshot: $filename to $target_dir"
@@ -59,7 +63,11 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
         language_code=$(echo "$entry" | jq -r '.lang')
         metadata=$(echo "$entry")
 
-        mkdir -p "./fastlane/metadata/$language_code"
+        target_dir="./fastlane/metadata/$language_code"
+        
+        if [[ ! -d "$target_dir" ]]; then
+            mkdir -p "$target_dir"
+        fi
 
         title=$(echo "$metadata" | jq -r '.title')
         subtitle=$(echo "$metadata" | jq -r '.subtitle')
