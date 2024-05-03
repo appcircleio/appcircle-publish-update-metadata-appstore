@@ -36,24 +36,29 @@ download_screenshots_or_apppreviews() {
       fi
 
     if [[ "$continueDownload" == "true" ]]; then
-    
-        for entry in $(jq -c '.[]' "$json_file"); do
-          local signed_url=$(echo "$entry" | jq -r '.SignedUrl')
-          local lang=$(echo "$entry" | jq -r '.Lang')
-          local display_type=$(echo "$entry" | jq -r '.ScreenshotDisplayType')
-          local filename=$(basename "$signed_url" | cut -d'?' -f1)
+     
+        counter=1
 
-          target_dir="./fastlane/metadata/$itemTypeForPath/$lang/$display_type"
-         
+        for entry in $(jq -c '.[]' "$json_file"); do
+            local signed_url=$(echo "$entry" | jq -r '.SignedUrl')
+            local lang=$(echo "$entry" | jq -r '.Lang')
+            local display_type=$(echo "$entry" | jq -r '.ScreenshotDisplayType')
+            local filename=$(basename "$signed_url" | cut -d'?' -f1)
+            local extension="${filename##*.}"  # Get the file extension
+            new_filename="${counter}_${lang}_${display_type}.${extension}"
+
+            target_dir="./fastlane/metadata/$itemTypeForPath/$lang"
+
             if [[ ! -d "$target_dir" ]]; then
                 mkdir -p "$target_dir"
             fi
-            
-          
-          curl -o "$target_dir/$filename" -k "$signed_url"
-          echo "Downloaded screenshot: $filename to $target_dir"
+        
+            ((counter++))
+
+            curl -o "$target_dir/$new_filename" -k "$signed_url"
+            echo "Downloaded screenshot: $new_filename to $target_dir"
         done
-      fi
+    fi
 }
 
 if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
