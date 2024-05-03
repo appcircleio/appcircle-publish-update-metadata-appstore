@@ -83,6 +83,7 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
         version=$(echo "$metadata" | jq -r '.version')
         copyright=$(echo "$metadata" | jq -r '.copyright')
         whatsNew=$(echo "$metadata" | jq -r '.whatsNew')
+        promotionalText=$(echo "$metadata" | jq -r '.promotionalText')
 
         echo "$title" > "./fastlane/metadata/$language_code/title.txt"
         echo "$subtitle" > "./fastlane/metadata/$language_code/subtitle.txt"
@@ -91,6 +92,7 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
         echo "$supportUrl" > "./fastlane/metadata/$language_code/support_url.txt"
         echo "$marketingUrl" > "./fastlane/metadata/$language_code/marketing_url.txt"
         echo "$copyright" > "./fastlane/metadata/$language_code/copyright.txt"
+        echo "$promotionalText" > "./fastlane/metadata/$language_code/promotional_text.txt"
 
         if [ "$whatsNew" != "null" ]; then
             echo "$whatsNew" > "./fastlane/metadata/$language_code/whatsNew.txt"
