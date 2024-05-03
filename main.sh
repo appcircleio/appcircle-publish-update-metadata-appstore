@@ -47,7 +47,7 @@ download_screenshots_or_apppreviews() {
             local extension="${filename##*.}"  # Get the file extension
             new_filename="${counter}_${lang}_${display_type}.${extension}"
 
-            target_dir="./fastlane/metadata/$itemTypeForPath/$lang"
+            target_dir="./fastlane/$itemTypeForPath/$lang"
 
             if [[ ! -d "$target_dir" ]]; then
                 mkdir -p "$target_dir"
