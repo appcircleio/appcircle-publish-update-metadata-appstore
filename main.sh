@@ -80,18 +80,17 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
         keywords=$(echo "$metadata" | jq -r '.keywords')
         supportUrl=$(echo "$metadata" | jq -r '.supportUrl')
         marketingUrl=$(echo "$metadata" | jq -r '.marketingUrl')
-        version=$(echo "$metadata" | jq -r '.version')
-        copyright=$(echo "$metadata" | jq -r '.copyright')
+
         whatsNew=$(echo "$metadata" | jq -r '.whatsNew')
         promotionalText=$(echo "$metadata" | jq -r '.promotionalText')
 
         echo "$title" > "./fastlane/metadata/$language_code/title.txt"
+        echo "$title" > "./fastlane/metadata/$language_code/name.txt"
         echo "$subtitle" > "./fastlane/metadata/$language_code/subtitle.txt"
         echo "$description" > "./fastlane/metadata/$language_code/description.txt"
         echo "$keywords" > "./fastlane/metadata/$language_code/keywords.txt"
         echo "$supportUrl" > "./fastlane/metadata/$language_code/support_url.txt"
         echo "$marketingUrl" > "./fastlane/metadata/$language_code/marketing_url.txt"
-        echo "$copyright" > "./fastlane/metadata/$language_code/copyright.txt"
         echo "$promotionalText" > "./fastlane/metadata/$language_code/promotional_text.txt"
 
         if [ "$whatsNew" != "null" ]; then
