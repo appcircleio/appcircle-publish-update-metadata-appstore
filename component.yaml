@@ -21,28 +21,28 @@ inputs:
   description: Specifies the Xcode version.
   helpText:
 - key: "AC_UPLOAD_BINARY_FILE"
-  defaultValue: "True"
+  defaultValue: "false"
   isRequired: false
   editorType: select
   title: Upload .ipa file while sending meta-data
   description: "Uploads .ipa file App Store or TestFlight stages."
-  options: "True,False"
+  options: "true,false"
   helpText:
 - key: "AC_UPLOAD_SCREENSHOT_FILES"
-  defaultValue: "True"
+  defaultValue: "true"
   isRequired: false
   editorType: select
   title: Uploads screenshots while sending meta-data
   description: "Uploads screenshot files to App Store Connect for the related app version."
-  options: "True,False"
+  options: "true,false"
   helpText:
 - key: "AC_UPDATE_METADATA_INFO"
-  defaultValue: "True"
+  defaultValue: "true"
   isRequired: false
   editorType: select
   title: Update metada-info fields
   description: "If disabled updating meta-data info will be ignored"
-  options: "True,False"
+  options: "true,false"
   helpText:
 processFilename: bash
 processArguments: '%AC_STEP_TEMP%/main.sh'
