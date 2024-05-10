@@ -20,14 +20,6 @@ inputs:
   title: Xcode Version
   description: Specifies the Xcode version.
   helpText:
-- key: "AC_UPLOAD_BINARY_FILE"
-  defaultValue: "false"
-  isRequired: false
-  editorType: select
-  title: Upload .ipa file while sending meta-data
-  description: "Uploads .ipa file App Store or TestFlight stages."
-  options: "true,false"
-  helpText:
 - key: "AC_UPLOAD_SCREENSHOT_FILES"
   defaultValue: "true"
   isRequired: false
