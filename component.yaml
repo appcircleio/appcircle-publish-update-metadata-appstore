@@ -1,8 +1,8 @@
 platform: iOS
 purpose: Publish
 buildPlatform:
-displayName: "Update meta-data on App Store"
-description: "Uploads metadata info, scrrenshots, videos or binary to App Store"
+displayName: "Update Metadata on App Store Connect"
+description: "Uploads METADATA info, scrrenshots, videos or binary to App Store"
 marketPlace: "AppleAppStore"
 structureType: CustomUI
 inputs:
@@ -32,7 +32,7 @@ inputs:
   defaultValue: "true"
   isRequired: false
   editorType: select
-  title: Update metada-info fields
+  title: Update METADATA fields
   description: "If disabled updating meta-data info will be ignored"
   options: "true,false"
   helpText:
