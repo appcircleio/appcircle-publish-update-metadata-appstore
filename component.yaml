@@ -33,8 +33,16 @@ inputs:
   isRequired: false
   editorType: select
   title: Update METADATA fields
-  description: "If disabled updating meta-data info will be ignored"
+  description: "If disabled updating METADATA info will be ignored"
   options: "true,false"
+  helpText:
+- key: "AC_CLEAR_SCREENSHOTS"
+  defaultValue: "false"
+  isRequired: false
+  editorType: select
+  title: Clear all previously uploaded screenshots
+  description: "If enabled all screenshots on App Store Connect will be removed before upload"
+  options: "false,true"
   helpText:
 processFilename: bash
 processArguments: '%AC_STEP_TEMP%/main.sh'
