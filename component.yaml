@@ -24,7 +24,7 @@ inputs:
   defaultValue: "true"
   isRequired: false
   editorType: select
-  title: Uploads screenshots while sending meta-data
+  title: Uploads screenshots while sending METADATA
   description: "Uploads screenshot files to App Store Connect for the related app version."
   options: "true,false"
   helpText:
