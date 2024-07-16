@@ -95,6 +95,7 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
 
         if [ "$whatsNew" != "null" ]; then
             echo "$whatsNew" > "./fastlane/metadata/$language_code/whatsNew.txt"
+            echo "$whatsNew" > "./fastlane/metadata/$language_code/release_notes.txt"
         fi
 
     done
