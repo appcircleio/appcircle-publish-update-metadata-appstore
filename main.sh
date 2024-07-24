@@ -4,19 +4,18 @@
       export LANG=en_US.UTF-8
       export LANGUAGE=en_US.UTF-8
     
-      echo "IPAFileName:$IPAFileName"
-      echo "IPAFileUrl:$IPAFileUrl"
-      echo "AppleId:$AppleId"
-      echo "BundleId:$BundleId"
-      echo "AppleUserName:$AppleUserName"
-      echo "ApplicationSpecificPassword:$ApplicationSpecificPassword"
-      echo "AppStoreConnectApiKey:$AppStoreConnectApiKey"
-      echo "AppStoreConnectApiKeyFileName:$AppStoreConnectApiKeyFileName"
-      echo "appleStoreSubmitApiType:$appleStoreSubmitApiType"
+      echo "IPAFileName:$AC_APP_FILE_NAME"
+      echo "IPAFileUrl:$AC_APP_FILE_URL"
+      echo "AppleId:$AC_APPLE_ID"
+      echo "BundleId:$AC_BUNDLE_ID"
+      echo "AppleUserName:$AC_APPLE_APP_SPECIFIC_USERNAME"
+      echo "ApplicationSpecificPassword:$AC_APPLE_APP_SPECIFIC_PASSWORD"
+      echo "AppStoreConnectApiKey:$AC_API_KEY"
+      echo "AppStoreConnectApiKeyFileName:$AC_API_KEY_FILE_NAME"
+      echo "appleStoreSubmitApiType:$AC_APPLE_STORE_SUBMIT_API_TYPE"
       
       locale
-      curl -o "./$IPAFileName" -k $IPAFileUrl
-
+      curl -o "./$AC_APP_FILE_NAME" -k $AC_APP_FILE_URL
   
 download_screenshots_or_apppreviews() {
 
@@ -61,9 +60,9 @@ download_screenshots_or_apppreviews() {
     fi
 }
 
-if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
+if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST" ]]; then
 
-    jq -c '.[]' "$MetaDataLocalizationList" | while IFS= read -r entry; do
+    jq -c '.[]' "$AC_METADATA_LOCALIZATION_LIST" | while IFS= read -r entry; do
 
         language_code=$(echo "$entry" | jq -r '.lang')
         metadata=$(echo "$entry")
@@ -101,10 +100,10 @@ if [[ -f "$MetaDataLocalizationList" && -s "$MetaDataLocalizationList" ]]; then
     done
 fi
 
-     download_screenshots_or_apppreviews "$ScreenShotList" "screenshots"
-     download_screenshots_or_apppreviews "$AppPreviewList" "app_previews"
+     download_screenshots_or_apppreviews "$AC_SCREEN_SHOT_LIST" "screenshots"
+     download_screenshots_or_apppreviews "$AC_APP_PREVIEW_LIST" "app_previews"
 
-     if [ "$appleStoreSubmitApiType" == 1 ] || [ "$appleStoreSubmitApiType" == "AppStoreConnectApiConnection" ]; then
+     if [ "$AC_APPLE_STORE_SUBMIT_API_TYPE" == 1 ] || [ "$AC_APPLE_STORE_SUBMIT_API_TYPE" == "AppStoreConnectApiConnection" ]; then
  
         bundle init
         echo "gem \"fastlane\"">>Gemfile
@@ -112,13 +111,13 @@ fi
         mkdir fastlane
         touch fastlane/Appfile
         touch fastlane/Fastfile
-        mv $FastFileConfig "fastlane/Fastfile"
+        mv $AC_FASTFILE_CONFIG "fastlane/Fastfile"
 
         # cat $FastFileConfig || true
         # cat $ScreenShotList || true
         # cat $AppPreviewList || true
 
-        mv "$AppStoreConnectApiKey" "$AppStoreConnectApiKeyFileName"
+        mv "$AC_API_KEY" "$AC_API_KEY_FILE_NAME"
  
           bundle exec fastlane doMetaData --verbose
           if [ $? -eq 0 ] 
