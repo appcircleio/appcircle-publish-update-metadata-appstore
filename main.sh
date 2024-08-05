@@ -80,7 +80,7 @@ if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST"
             if [ "$value" != "null" ]; then
                 echo "$value" > "$file_path"
             else
-                touch "$file_path"
+               echo " " > "$file_path"
             fi
         }
 
