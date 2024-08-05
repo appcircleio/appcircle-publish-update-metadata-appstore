@@ -41,7 +41,7 @@ download_screenshots_or_apppreviews() {
         for entry in $(jq -c '.[]' "$json_file"); do
             local signed_url=$(echo "$entry" | jq -r '.SignedUrl')
             local lang=$(echo "$entry" | jq -r '.Lang')
-            local order = $(echo "$entry" | jq -r '.Order')
+            local order=$(echo "$entry" | jq -r '.Order')
             local display_type=$(echo "$entry" | jq -r '.ScreenshotDisplayType')
             local filename=$(basename "$signed_url" | cut -d'?' -f1)
             local extension="${filename##*.}"  # Get the file extension
