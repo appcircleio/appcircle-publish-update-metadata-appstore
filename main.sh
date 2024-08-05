@@ -73,6 +73,17 @@ if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST"
             mkdir -p "$target_dir"
         fi
 
+        # Helper function to create file if value is not null
+        write_file_if_not_null() {
+            local value="$1"
+            local file_path="$2"
+            if [ "$value" != "null" ]; then
+                echo "$value" > "$file_path"
+            else
+                touch "$file_path"
+            fi
+        }
+
         title=$(echo "$metadata" | jq -r '.title')
         subtitle=$(echo "$metadata" | jq -r '.subtitle')
         description=$(echo "$metadata" | jq -r '.description')
@@ -83,14 +94,14 @@ if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST"
         whatsNew=$(echo "$metadata" | jq -r '.whatsNew')
         promotionalText=$(echo "$metadata" | jq -r '.promotionalText')
 
-        echo "$title" > "./fastlane/metadata/$language_code/title.txt"
-        echo "$title" > "./fastlane/metadata/$language_code/name.txt"
-        echo "$subtitle" > "./fastlane/metadata/$language_code/subtitle.txt"
-        echo "$description" > "./fastlane/metadata/$language_code/description.txt"
-        echo "$keywords" > "./fastlane/metadata/$language_code/keywords.txt"
-        echo "$supportUrl" > "./fastlane/metadata/$language_code/support_url.txt"
-        echo "$marketingUrl" > "./fastlane/metadata/$language_code/marketing_url.txt"
-        echo "$promotionalText" > "./fastlane/metadata/$language_code/promotional_text.txt"
+        write_file_if_not_null "$title" "./fastlane/metadata/$language_code/title.txt"
+        write_file_if_not_null "$title" "./fastlane/metadata/$language_code/name.txt"
+        write_file_if_not_null "$subtitle" "./fastlane/metadata/$language_code/subtitle.txt"
+        write_file_if_not_null "$description" "./fastlane/metadata/$language_code/description.txt"
+        write_file_if_not_null "$keywords" "./fastlane/metadata/$language_code/keywords.txt"
+        write_file_if_not_null "$supportUrl" "./fastlane/metadata/$language_code/support_url.txt"
+        write_file_if_not_null "$marketingUrl" "./fastlane/metadata/$language_code/marketing_url.txt"
+        write_file_if_not_null "$promotionalText" "./fastlane/metadata/$language_code/promotional_text.txt"
 
         if [ "$whatsNew" != "null" ]; then
             echo "$whatsNew" > "./fastlane/metadata/$language_code/whatsNew.txt"
