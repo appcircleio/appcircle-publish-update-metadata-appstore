@@ -74,28 +74,31 @@ if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST"
             mkdir -p "$target_dir"
         fi
 
-        title=$(echo "$metadata" | jq -r '.title')
-        subtitle=$(echo "$metadata" | jq -r '.subtitle')
-        description=$(echo "$metadata" | jq -r '.description')
-        keywords=$(echo "$metadata" | jq -r '.keywords')
-        supportUrl=$(echo "$metadata" | jq -r '.supportUrl')
-        marketingUrl=$(echo "$metadata" | jq -r '.marketingUrl')
+        # Set empty string for any null values
+        title=$(echo "$metadata" | jq -r '.title // ""')
+        subtitle=$(echo "$metadata" | jq -r '.subtitle // ""')
+        description=$(echo "$metadata" | jq -r '.description // ""')
+        keywords=$(echo "$metadata" | jq -r '.keywords // ""')
+        supportUrl=$(echo "$metadata" | jq -r '.supportUrl // ""')
+        marketingUrl=$(echo "$metadata" | jq -r '.marketingUrl // ""')
+        whatsNew=$(echo "$metadata" | jq -r '.whatsNew // ""')
+        promotionalText=$(echo "$metadata" | jq -r '.promotionalText // ""')
 
-        whatsNew=$(echo "$metadata" | jq -r '.whatsNew')
-        promotionalText=$(echo "$metadata" | jq -r '.promotionalText')
+        echo "$title" > "$target_dir/title.txt"
+        echo "$title" > "$target_dir/name.txt"
+        echo "$subtitle" > "$target_dir/subtitle.txt"
+        echo "$description" > "$target_dir/description.txt"
+        echo "$keywords" > "$target_dir/keywords.txt"
+        echo "$supportUrl" > "$target_dir/support_url.txt"
+        echo "$marketingUrl" > "$target_dir/marketing_url.txt"
+        echo "$promotionalText" > "$target_dir/promotional_text.txt"
 
-        echo "$title" > "./fastlane/metadata/$language_code/title.txt"
-        echo "$title" > "./fastlane/metadata/$language_code/name.txt"
-        echo "$subtitle" > "./fastlane/metadata/$language_code/subtitle.txt"
-        echo "$description" > "./fastlane/metadata/$language_code/description.txt"
-        echo "$keywords" > "./fastlane/metadata/$language_code/keywords.txt"
-        echo "$supportUrl" > "./fastlane/metadata/$language_code/support_url.txt"
-        echo "$marketingUrl" > "./fastlane/metadata/$language_code/marketing_url.txt"
-        echo "$promotionalText" > "./fastlane/metadata/$language_code/promotional_text.txt"
-
-        if [ "$whatsNew" != "null" ]; then
-            echo "$whatsNew" > "./fastlane/metadata/$language_code/whatsNew.txt"
-            echo "$whatsNew" > "./fastlane/metadata/$language_code/release_notes.txt"
+        if [ -n "$whatsNew" ]; then
+            echo "$whatsNew" > "$target_dir/whatsNew.txt"
+            echo "$whatsNew" > "$target_dir/release_notes.txt"
+        else
+            echo "" > "$target_dir/whatsNew.txt"
+            echo "" > "$target_dir/release_notes.txt"
         fi
 
     done
