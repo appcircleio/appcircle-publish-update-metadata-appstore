@@ -30,7 +30,7 @@ download_screenshots_or_apppreviews() {
 
 
       if [[ ! -s "$json_file" ]] || ! jq -e '.[]' "$json_file" > /dev/null 2>&1; then
-        echo "Error: Screenshot list file '$json_file' is empty or not a valid JSON array!" >&2
+        echo "Warning: file list '$json_file' is empty or not a valid, $json_file downloading is skipping..." >&2
         continueDownload="false";
       fi
 
@@ -75,18 +75,13 @@ if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST"
         fi
 
         # Set empty string for any null values
-        title=$(echo "$metadata" | jq -r '.title // ""')
-        subtitle=$(echo "$metadata" | jq -r '.subtitle // ""')
         description=$(echo "$metadata" | jq -r '.description // ""')
         keywords=$(echo "$metadata" | jq -r '.keywords // ""')
         supportUrl=$(echo "$metadata" | jq -r '.supportUrl // ""')
         marketingUrl=$(echo "$metadata" | jq -r '.marketingUrl // ""')
         whatsNew=$(echo "$metadata" | jq -r '.whatsNew // ""')
         promotionalText=$(echo "$metadata" | jq -r '.promotionalText // ""')
-
-        echo "$title" > "$target_dir/title.txt"
-        echo "$title" > "$target_dir/name.txt"
-        echo "$subtitle" > "$target_dir/subtitle.txt"
+     
         echo "$description" > "$target_dir/description.txt"
         echo "$keywords" > "$target_dir/keywords.txt"
         echo "$supportUrl" > "$target_dir/support_url.txt"
