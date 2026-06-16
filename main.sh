@@ -62,6 +62,50 @@ download_screenshots_or_apppreviews() {
     fi
 }
 
+# Downloads the Apple reviewer attachment into ./fastlane/review_attachment/attachment.<ext>.
+# Matches the path referenced by the generated Fastfile (File.exist?-guarded, so a skip/failure
+# never breaks `fastlane deliver`). AC_REVIEW_ATTACHMENT may be an inline signed URL, or a path
+# to a file the agent wrote (containing a bare URL or {SignedUrl,Extension} JSON).
+download_review_attachment() {
+    local raw="$1"
+    local ext="${AC_REVIEW_ATTACHMENT_EXT:-}"
+
+    if [[ -z "$raw" ]]; then
+        echo "No app review attachment provided. Skipping."
+        return 0
+    fi
+
+    local signed_url=""
+    if [[ -f "$raw" ]]; then
+        if jq -e '.SignedUrl' "$raw" > /dev/null 2>&1; then
+            signed_url=$(jq -r '.SignedUrl' "$raw")
+            [[ -z "$ext" ]] && ext=$(jq -r '.Extension // empty' "$raw" 2>/dev/null)
+        else
+            signed_url=$(tr -d ' \t\r\n' < "$raw")
+        fi
+    else
+        signed_url="$raw"
+    fi
+
+    if [[ -z "$signed_url" ]]; then
+        echo "App review attachment URL is empty. Skipping."
+        return 0
+    fi
+
+    if [[ -z "$ext" ]]; then
+        local fname; fname=$(basename "$signed_url" | cut -d'?' -f1)
+        ext="${fname##*.}"
+        [[ -z "$ext" || "$ext" == "$fname" ]] && ext="bin"
+    fi
+
+    mkdir -p ./fastlane/review_attachment
+    if curl -fSL --retry 3 --retry-delay 2 -k -o "./fastlane/review_attachment/attachment.${ext}" "$signed_url"; then
+        echo "Downloaded app review attachment -> ./fastlane/review_attachment/attachment.${ext}"
+    else
+        echo "Warning: app review attachment download failed, continuing without it." >&2
+    fi
+}
+
 if [[ -f "$AC_METADATA_LOCALIZATION_LIST" && -s "$AC_METADATA_LOCALIZATION_LIST" ]]; then
 
     jq -c '.[]' "$AC_METADATA_LOCALIZATION_LIST" | while IFS= read -r entry; do
@@ -102,6 +146,7 @@ fi
 
      download_screenshots_or_apppreviews "$AC_SCREEN_SHOT_LIST" "screenshots"
      download_screenshots_or_apppreviews "$AC_APP_PREVIEW_LIST" "app_previews"
+     download_review_attachment "$AC_REVIEW_ATTACHMENT"
 
      if [ "$AC_APPLE_STORE_SUBMIT_API_TYPE" == 1 ] || [ "$AC_APPLE_STORE_SUBMIT_API_TYPE" == "AppStoreConnectApiConnection" ]; then
  
