@@ -167,6 +167,15 @@ fi
         touch fastlane/Fastfile
         mv $AC_FASTFILE_CONFIG "fastlane/Fastfile"
 
+        # --- GECICI DEBUG: Fastfile + review_attachment kontrolu (kok neden bulununca KALDIR) ---
+        echo "---FASTFILE BEGIN---"
+        cat fastlane/Fastfile
+        echo "---FASTFILE END---"
+        echo "---REVIEW_ATTACHMENT DIR---"
+        ls -la fastlane/review_attachment/ 2>/dev/null || echo "review_attachment klasoru YOK"
+        echo "---AC_REVIEW_ATTACHMENT_EXT=$AC_REVIEW_ATTACHMENT_EXT---"
+        echo "---END DEBUG---"
+
         # cat $FastFileConfig || true
         # cat $ScreenShotList || true
         # cat $AppPreviewList || true
@@ -183,4 +192,3 @@ fi
             exit 1
           fi
         fi
-
